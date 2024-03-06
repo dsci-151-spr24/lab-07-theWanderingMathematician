@@ -60,15 +60,42 @@ You can find out more about the dataset by inspecting their documentation, which
 
 1.  What type of study do you think these data come from: observational or experiment?
     Why?
+- *This data is from an observational study; it was taken from a survey, and surveys don't control for or change variables, they just observe them.*
 
 2.  How many observations are in this dataset?
     What does each observation represent?
+- *This dataset has `r nrow(Whickham)` rows, each of which represents a woman in Whickham who was included in the survey, and who was classified as a current smoker or as never having smoked.*
 
 3.  How many variables are in this dataset?
     What type of variable is each?
     Display each variable using an appropriate visualization.
+- *There are three variables in this dataset: two faceted variables (`outcome` and `smoker`) and one integer variable (`age`).*
+
+```{r}
+Whickham %>%
+  ggplot(aes(x = outcome, fill = outcome)) +
+  geom_bar() +
+  theme(legend.position = "none") +
+  scale_fill_manual(values = c("#67a9cf", "#ef5a42")) +
+  labs(title = "Outcome", subtitle = "Whether the subject was alive or dead 20 years after the survey", x = "", y = "") +
+  theme_minimal()
+Whickham %>%
+  ggplot(aes(x = smoker, fill = smoker)) +
+  geom_bar() +
+  theme(legend.position = "none") +
+  scale_fill_manual(values = c("#67a9cf", "#ef5a42")) +
+  labs(title = "Smoker", subtitle = "Was the subject a smoker or not at the time of the survey?", x = "", y = "") +
+  theme_minimal()
+Whickham %>%
+  ggplot(aes(x = age)) +
+  geom_histogram(binwidth = 2) +
+  labs(title = "Age", subtitle = "Age of the subject at the time of the survey", x = "Age", y = "") +
+  theme_minimal()
+```
 
 4.  What would you expect the relationship between smoking status and health outcome to be?
+
+- *My initial hypothesis would be that there would be a negative correlation between smoking status and health outcome, moreso in older people.*
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
 
