@@ -1,6 +1,8 @@
 ---
 title: "Lab 07 - Smokers in Whickham"
 subtitle: "Simpson's paradox"
+author: "Micaiah Balonek"
+date: "6 March, 2024"
 output: 
   tufte::tufte_html:
     tufte_variant: "envisioned"
