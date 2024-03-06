@@ -270,7 +270,21 @@ Display each variable using an appropriate visualization.</li>
 <li>Create a visualization depicting the relationship between smoking status and health outcome. Briefly describe the relationship, and evaluate whether this meets your expectations. Additionally, calculate the relevant conditional probabilities to help your narrative. Here is some code to get you started:</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>Whickham <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">count</span>(smoker, outcome)</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">count</span>(smoker, outcome) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> smoker, <span class="at">y =</span> n, <span class="at">fill =</span> outcome)) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;fill&quot;</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Smoking status vs. health outcome&quot;</span>, <span class="at">subtitle =</span> <span class="st">&quot;Among women in Whickham in a 1972 survey&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Did they smoke?&quot;</span>, <span class="at">y =</span> <span class="st">&quot;&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Health outcome&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>smoker_count <span class="ot">&lt;-</span> Whickham <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="fu">count</span>(smoker)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>Whickham <span class="sc">%&gt;%</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="fu">group_by</span>(smoker) <span class="sc">%&gt;%</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="fu">count</span>(outcome) <span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="fu">full_join</span>(smoker_count, <span class="st">&quot;smoker&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n.x<span class="sc">/</span>n.y, <span class="at">.keep =</span> <span class="st">&quot;unused&quot;</span>)</span></code></pre></div>
+<ul>
+<li><em>The data here shows that 31% of the survey-takers who didn’t smoke had died, while only 24% of those who had smoked did, contrary to our expectations of a higher proportion of mortalities among people who had smoked.</em></li>
+</ul>
 <ol start="6" style="list-style-type: decimal">
 <li>Create a new variable called <code>age_cat</code> using the following scheme:</li>
 </ol>
@@ -279,11 +293,33 @@ Display each variable using an appropriate visualization.</li>
 <li><code>age &gt; 44 &amp; age &lt;= 64 ~ &quot;45-64&quot;</code></li>
 <li><code>age &gt; 64 ~ &quot;65+&quot;</code></li>
 </ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>Whickham <span class="ot">&lt;-</span> Whickham <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_cat =</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    age <span class="sc">&lt;=</span> <span class="dv">44</span> <span class="sc">~</span> <span class="st">&quot;18-44&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    age <span class="sc">&gt;</span> <span class="dv">64</span> <span class="sc">~</span> <span class="st">&quot;65+&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="cn">TRUE</span>    <span class="sc">~</span> <span class="st">&quot;45-64&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  ))</span></code></pre></div>
 <ol start="7" style="list-style-type: decimal">
 <li>Re-create the visualization depicting the relationship between smoking status and health outcome, faceted by <code>age_cat</code>. What changed? What might explain this change? Extend the contingency table from earlier by breaking it down by age category and use it to help your narrative.</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>Whickham <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">count</span>(smoker, age_cat, outcome)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>Whickham <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">count</span>(smoker, age_cat, outcome) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> smoker, <span class="at">y =</span> n, <span class="at">fill =</span> outcome)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;fill&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Smoking status vs. health outcome&quot;</span>, <span class="at">subtitle =</span> <span class="st">&quot;Among women in Whickham in a 1972 survey&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Did they smoke?&quot;</span>, <span class="at">y =</span> <span class="st">&quot;&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Health outcome&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> age_cat, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>smoker_age_count <span class="ot">&lt;-</span> Whickham <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="fu">count</span>(smoker, age_cat)</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>Whickham <span class="sc">%&gt;%</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="fu">group_by</span>(smoker, age_cat) <span class="sc">%&gt;%</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">count</span>(outcome) <span class="sc">%&gt;%</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="fu">full_join</span>(smoker_age_count, <span class="fu">join_by</span>(<span class="st">&quot;smoker&quot;</span>, <span class="st">&quot;age_cat&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n.x<span class="sc">/</span>n.y, <span class="at">.keep =</span> <span class="st">&quot;unused&quot;</span>)</span></code></pre></div>
+<ul>
+<li><em>After breaking down the data into age groups, we see that, despite the statistic seen in the previous visualisation, we now have three different distributions which show that, within each category, a higher proportion of people who had smoked died than that of people who hadn’t smoked. This difference however, is much smaller than the difference between seperate categories, since older people are more likely to die of many causes. For example, the difference in mortality rates between smokers and non-smokers from 18-44 is only 1.7%, while the difference between smoking 18-44 year olds and smoking 45-64 year-olds is 27% My guess is that smoking is generally more common in younger people, and that the general difference in frequencies between the age groups end up overriding the differences due to smoking status, producing the counterintuitive result seen in the first visualisation.</em></li>
+</ul>
 <p>🧶 ✅ ⬆️ Knit, <em>commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards and review the md document on GitHub to make sure you’re happy with the final state of your work.</em></p>
 </div>
 
